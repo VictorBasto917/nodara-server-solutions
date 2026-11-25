@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NODARA | Server Solutions — Gestión Integral de Servidores</title>
+    <meta name="description" content="Administramos y cuidamos tus servidores físicos y virtuales con monitoreo constante, mantenimiento preventivo, seguridad reforzada y explicaciones claras en Mérida, Yucatán.">
+    
+    <!-- Favicon SVG inline para GitHub Pages -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='62,14 98,35 98,85 62,106 26,85 26,35' fill='%232563EB'/%3E%3Crect x='43' y='40' width='38' height='10' rx='2' fill='%23060913'/%3E%3Crect x='43' y='55' width='38' height='10' rx='2' fill='%23060913'/%3E%3Crect x='43' y='70' width='38' height='10' rx='2' fill='%23060913'/%3E%3C/svg%3E">
+
+    <!-- Google Fonts: Plus Jakarta Sans, Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        nodara: {
+                            bg: '#070B14',
+                            surface: '#0B1120',
+                            card: '#0F172A',
+                            cardHover: '#141F38',
+                            primary: '#1D7AFC',
+                            royal: '#155EEF',
+                            cyan: '#38BDF8',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos base y efectos Cyber Infrastructure */
+        body {
+            background-color: #070B14;
+            color: #F8FAFC;
+            overflow-x: hidden;
+        }
+
+        /* Malla hexagonal sutil de fondo */
+        .hex-pattern-bg {
+            background-color: #070B14;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%231e293b' stroke-opacity='0.35' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%231D7AFC' stroke-opacity='0.09' stroke-width='1'/%3E%3C/svg%3E");
+        }
+
+        .hero-radial-glow {
+            background: 
+                radial-gradient(circle at 20% 15%, rgba(29, 122, 252, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 82% 25%, rgba(56, 189, 248, 0.14) 0%, transparent 50%);
+        }
+
+        .glass-nav {
+            background: rgba(7, 11, 20, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.90) 0%, rgba(11, 17, 32, 0.95) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.45);
+            box-shadow: 0 20px 40px -15px rgba(29, 122, 252, 0.25), 0 0 20px -5px rgba(56, 189, 248, 0.12);
+            transform: translateY(-3px);
+        }
+
+        /* Animación de revelado al hacer scroll */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.65s ease-out, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070B14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1D7AFC;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-nodara-primary selection:text-white">
+
+    <!-- ==================== NOTIFICACIÓN TOAST FLOTANTE ==================== -->
+    <div id="toast-notification" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-nodara-card border border-nodara-cyan/40 text-white px-4 py-3 rounded-xl shadow-2xl shadow-nodara-primary/30 flex items-center gap-3 text-sm">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+            <span id="toast-message" class="font-medium">Acción completada</span>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- ==================== VISTA 1: PORTAL PÚBLICO COMERCIAL ============== -->
+    <!-- ===================================================================== -->
+    <div id="public-website-view">
+
+        <!-- 1. NAVEGACIÓN FIJA GLASSMORPHISM -->
+        <header class="fixed top-0 left-0 right-0 z-40 glass-nav">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20">
+                    
+                    <!-- Logotipo SVG Oficial NODARA SERVER SOLUTIONS -->
+                    <a href="#inicio" class="flex items-center gap-3.5 group focus:outline-none" aria-label="NODARA Server Solutions">
+                        <div class="relative">
+                            <div class="absolute -inset-1 bg-nodara-primary/25 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <svg class="relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 transition-transform duration-300 group-hover:scale-105" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- 2 Líneas de circuito con nodos hacia la izquierda -->
+                                <line x1="6" y1="38" x2="26" y2="38" stroke="#1D7AFC" stroke-width="3.8" stroke-linecap="round"/>
+                                <circle cx="6" cy="38" r="4.5" fill="#38BDF8"/>
+                                <line x1="6" y1="82" x2="26" y2="82" stroke="#1D7AFC" stroke-width="3.8" stroke-linecap="round"/>
+                                <circle cx="6" cy="82" r="4.5" fill="#38BDF8"/>
+                                
+                                <!-- Hexágono Exterior Segmentado (Blanco y Azul Eléctrico) -->
+                                <polygon points="62,14 98,35 98,85 62,106 26,85 26,35" stroke="#FFFFFF" stroke-width="3.8" fill="none"/>
+                                <polyline points="62,14 98,35 98,85 62,106" stroke="#1D7AFC" stroke-width="3.8" fill="none"/>
+                                
+                                <!-- Hexágono Interior Azul Vibrante -->
+                                <polygon points="62,22 91,39 91,81 62,98 33,81 33,39" fill="url(#nodaraHexGrad)"/>
+                                
+                                <!-- 6 Nodos Circulares Azules en los Vértices -->
+                                <circle cx="62" cy="14" r="5" fill="#1D7AFC" stroke="#070B14" stroke-width="1.5"/>
+                                <circle cx="98" cy="35" r="5" fill="#38BDF8" stroke="#070B14" stroke-width="1.5"/>
+                                <circle cx="98" cy="85" r="5" fill="#38BDF8" stroke="#070B14" stroke-width="1.5"/>
+                                <circle cx="62" cy="106" r="5" fill="#1D7AFC" stroke="#070B14" stroke-width="1.5"/>
+                                <circle cx="26" cy="85" r="5" fill="#1D7AFC" stroke="#070B14" stroke-width="1.5"/>
+                                <circle cx="26" cy="35" r="5" fill="#1D7AFC" stroke="#070B14" stroke-width="1.5"/>
+
+                                <!-- Rack de 3 Servidores Oscuros Horizontales con LEDs Azules -->
+                                <rect x="42" y="39" width="40" height="10.5" rx="2.5" fill="#070B14"/>
+                                <line x1="47" y1="44.2" x2="64" y2="44.2" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="75.5" cy="44.2" r="2.4" fill="#38BDF8"/>
+                                
+                                <rect x="42" y="54.5" width="40" height="10.5" rx="2.5" fill="#070B14"/>
+                                <line x1="47" y1="59.7" x2="64" y2="59.7" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="75.5" cy="59.7" r="2.4" fill="#38BDF8"/>
+                                
+                                <rect x="42" y="70" width="40" height="10.5" rx="2.5" fill="#070B14"/>
+                                <line x1="47" y1="75.2" x2="64" y2="75.2" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="75.5" cy="75.2" r="2.4" fill="#38BDF8"/>
+
+                                <defs>
+                                    <linearGradient id="nodaraHexGrad" x1="33" y1="22" x2="91" y2="98" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="#1D7AFC"/>
+                                        <stop offset="1" stop-color="#155EEF"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="font-display font-extrabold text-xl sm:text-2xl tracking-wider leading-none">
+                                <span class="text-white">NODA</span><span class="text-transparent bg-clip-text bg-gradient-to-r from-nodara-primary to-nodara-cyan">RA</span>
+                            </div>
+                            <div class="flex items-center mt-1">
+                                <span class="h-[2px] w-6 bg-white inline-block"></span>
+                                <span class="h-[2px] w-24 bg-gradient-to-r from-nodara-primary to-nodara-cyan inline-block"></span>
+                            </div>
+                            <span class="text-[9px] sm:text-[10px] font-mono font-semibold tracking-[0.26em] text-slate-300 mt-1 uppercase">
+                                SERVER SOLUTIONS
+                            </span>
+                        </div>
+                    </a>
+
+                    <!-- Enlaces de Navegación Comercial Desktop -->
+                    <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-300">
+                        <a href="#comparativa" class="hover:text-white transition-colors">Soluciones</a>
+                        <a href="#servicios" class="hover:text-white transition-colors">Servicios</a>
+                        <a href="#garantias" class="hover:text-white transition-colors">Compromisos</a>
+                        <a href="#diagnostico-interactivo" class="hover:text-white transition-colors">Diagnóstico</a>
+                        <a href="#equipo" class="hover:text-white transition-colors">Equipo</a>
+                    </nav>
+
+                    <!-- Botón Acceso Admin + CTA Cotizar -->
+                    <div class="flex items-center gap-2.5 sm:gap-3">
+                        <button type="button" onclick="openAdminLoginModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 hover:border-nodara-cyan/40 text-slate-300 hover:text-white text-xs font-mono transition-all" title="Portal Privado de Administradores">
+                            <svg class="w-3.5 h-3.5 text-nodara-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            <span class="hidden sm:inline">Acceso Admin</span>
+                            <span class="sm:hidden">Admin</span>
+                        </button>
+
+                        <a href="#contacto" class="hidden sm:inline-flex items-center gap-2 bg-gradient-to-r from-nodara-primary to-nodara-royal hover:from-blue-500 hover:to-nodara-primary text-white font-semibold text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-nodara-primary/30 transition-all hover:scale-[1.02]">
+                            <span>Cotizar</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        </a>
+
+                        <!-- Botón Menú Móvil -->
+                        <button id="mobile-menu-btn" type="button" class="lg:hidden p-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 focus:outline-none" aria-label="Abrir menú">
+                            <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                            <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menú Móvil Desplegable -->
+            <div id="mobile-menu" class="hidden lg:hidden bg-nodara-surface/95 backdrop-blur-xl border-b border-white/10 px-4 pt-3 pb-6 space-y-2">
+                <a href="#comparativa" class="mobile-link block px-4 py-2.5 rounded-xl text-base font-medium text-slate-200 hover:bg-white/5 hover:text-white">Problemas vs. Soluciones</a>
+                <a href="#servicios" class="mobile-link block px-4 py-2.5 rounded-xl text-base font-medium text-slate-200 hover:bg-white/5 hover:text-white">Catálogo de Servicios</a>
+                <a href="#garantias" class="mobile-link block px-4 py-2.5 rounded-xl text-base font-medium text-slate-200 hover:bg-white/5 hover:text-white">Compromisos de Servicio</a>
+                <a href="#diagnostico-interactivo" class="mobile-link block px-4 py-2.5 rounded-xl text-base font-medium text-slate-200 hover:bg-white/5 hover:text-white">Diagnóstico de Riesgo</a>
+                <a href="#equipo" class="mobile-link block px-4 py-2.5 rounded-xl text-base font-medium text-slate-200 hover:bg-white/5 hover:text-white">Equipo Directivo</a>
+                <div class="pt-2 grid grid-cols-2 gap-2">
+                    <button type="button" onclick="openAdminLoginModal()" class="flex items-center justify-center gap-1.5 bg-white/5 border border-white/15 text-slate-200 font-mono text-xs py-3 px-3 rounded-xl">
+                        <span>🔒 Portal Socios</span>
+                    </button>
+                    <a href="#contacto" class="mobile-link flex items-center justify-center gap-2 bg-nodara-primary hover:bg-blue-500 text-white font-semibold py-3 px-3 rounded-xl text-xs shadow-lg">
+                        <span>Solicitar Cotización</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. HERO COMERCIAL + CONSOLA DEMO NODARA GUARDIAN -->
+        <section id="inicio" class="relative pt-28 pb-20 lg:pt-36 lg:pb-28 hex-pattern-bg overflow-hidden">
+            <div class="absolute inset-0 hero-radial-glow pointer-events-none"></div>
+            <canvas id="network-canvas" class="absolute inset-0 w-full h-full pointer-events-none opacity-45"></canvas>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Columna Izquierda: Propuesta de Valor Comercial -->
+                    <div class="lg:col-span-6 space-y-6">
+                        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-nodara-primary/15 border border-nodara-cyan/30 text-nodara-cyan text-xs sm:text-sm font-medium">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                            </span>
+                            <span>Gestión Integral de Servidores Físicos y Virtuales</span>
+                        </div>
+
+                        <h1 class="font-display text-3xl sm:text-4xl lg:text-[2.75rem] xl:text-[3rem] font-extrabold text-white leading-[1.15] tracking-tight">
+                            Administramos y cuidamos tus servidores con <span class="text-transparent bg-clip-text bg-gradient-to-r from-nodara-primary via-blue-400 to-nodara-cyan">monitoreo constante</span> y explicaciones claras.
+                        </h1>
+
+                        <p class="text-base sm:text-lg text-slate-300 leading-relaxed">
+                            Mantenimiento preventivo, seguridad reforzada y soporte especializado en <strong class="text-white">Linux y Windows Server</strong>, para que tú te dediques a tu negocio con total tranquilidad y <span class="text-nodara-cyan font-medium">sin jerga técnica innecesaria</span>.
+                        </p>
+
+                        <!-- CTAs Principales -->
+                        <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                            <a href="#diagnostico-interactivo" class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-nodara-primary to-nodara-royal hover:from-blue-500 hover:to-nodara-primary text-white font-semibold px-7 py-4 rounded-xl shadow-xl shadow-nodara-primary/30 transition-all hover:scale-[1.02] text-sm sm:text-base">
+                                <span>Evaluar mis Servidores Gratis</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </a>
+                            <a href="https://wa.me/529993341058?text=Hola%20V%C3%ADctor,%20vengo%20de%20la%20p%C3%A1gina%20de%20NODARA%20Server%20Solutions%20y%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n." target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/15 font-semibold px-6 py-4 rounded-xl transition-all text-sm sm:text-base">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                                <span>WhatsApp Directo</span>
+                            </a>
+                        </div>
+
+                        <!-- Métricas Comerciales Clave -->
+                        <div class="grid grid-cols-3 gap-4 pt-6 border-t border-white/10">
+                            <div>
+                                <div class="font-mono text-xl sm:text-2xl font-bold text-white">&gt;99.5%</div>
+                                <div class="text-xs text-slate-400 mt-0.5">Disponibilidad Operativa</div>
+                            </div>
+                            <div>
+                                <div class="font-mono text-xl sm:text-2xl font-bold text-nodara-cyan">0%</div>
+                                <div class="text-xs text-slate-400 mt-0.5">Pérdida de Datos</div>
+                            </div>
+                            <div>
+                                <div class="font-mono text-xl sm:text-2xl font-bold text-emerald-400">24/7</div>
+                                <div class="text-xs text-slate-400 mt-0.5">Vigilancia Preventiva</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: CONSOLA DEMO NODARA GUARDIAN -->
+                    <div class="lg:col-span-6">
+                        <div class="glass-card rounded-2xl p-5 sm:p-6 shadow-2xl shadow-nodara-primary/20 border border-white/15 relative">
+                            
+                            <!-- Cabecera de Consola -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-4 border-b border-white/10">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="flex gap-1.5">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400/80"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                                    </div>
+                                    <span class="font-mono font-bold text-xs sm:text-sm text-white tracking-wider">NODARA GUARDIAN // DEMO EN VIVO</span>
+                                </div>
+                                <span id="noc-status-pill" class="font-mono text-[11px] px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                                    ESTADO: ÓPTIMO
+                                </span>
+                            </div>
+
+                            <!-- Selector Interactivo de 3 Escenarios -->
+                            <div class="grid grid-cols-3 gap-1.5 p-1.5 rounded-xl bg-nodara-bg border border-white/10 mb-5">
+                                <button type="button" onclick="setNocMode('optimal')" id="noc-btn-optimal" class="py-2 px-2 rounded-lg text-xs font-semibold bg-nodara-primary text-white shadow transition-all">
+                                    Operación Óptima
+                                </button>
+                                <button type="button" onclick="setNocMode('backup')" id="noc-btn-backup" class="py-2 px-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all">
+                                    Auditoría Backup
+                                </button>
+                                <button type="button" onclick="setNocMode('preventive')" id="noc-btn-preventive" class="py-2 px-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all">
+                                    Detección Preventiva
+                                </button>
+                            </div>
+
+                            <!-- Gráfica de Pulso SVG en Movimiento -->
+                            <div class="bg-nodara-bg/90 border border-white/10 rounded-xl p-4 mb-4">
+                                <div class="flex items-center justify-between text-xs mb-2">
+                                    <span class="text-slate-400 font-mono">SALUD DE INFRAESTRUCTURA</span>
+                                    <span id="noc-latency" class="font-mono text-nodara-cyan font-semibold">Latencia: 4.2 ms</span>
+                                </div>
+                                <div class="h-16 w-full overflow-hidden relative">
+                                    <svg id="telemetry-svg" class="w-full h-full" viewBox="0 0 400 60" preserveAspectRatio="none">
+                                        <defs>
+                                            <linearGradient id="pulseFill" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.35"/>
+                                                <stop offset="100%" stop-color="#1D7AFC" stop-opacity="0.0"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <path id="telemetry-area" fill="url(#pulseFill)" d="M0,45 L400,45 L400,60 L0,60 Z"></path>
+                                        <path id="telemetry-line" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round" d="M0,45 L400,45"></path>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Grid de 4 Métricas Dinámicas -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 font-mono">
+                                <div class="bg-nodara-bg/80 border border-white/10 rounded-xl p-3">
+                                    <div class="text-[10px] text-slate-400 uppercase">CPU Cluster</div>
+                                    <div id="metric-cpu" class="text-base font-bold text-white mt-0.5">23%</div>
+                                    <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                                        <div id="bar-cpu" class="bg-emerald-400 h-full transition-all duration-500" style="width: 23%"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-nodara-bg/80 border border-white/10 rounded-xl p-3">
+                                    <div class="text-[10px] text-slate-400 uppercase">Memoria RAM</div>
+                                    <div id="metric-ram" class="text-base font-bold text-white mt-0.5">46%</div>
+                                    <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                                        <div id="bar-ram" class="bg-nodara-cyan h-full transition-all duration-500" style="width: 46%"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-nodara-bg/80 border border-white/10 rounded-xl p-3">
+                                    <div class="text-[10px] text-slate-400 uppercase">Backup Vault</div>
+                                    <div id="metric-backup" class="text-sm font-bold text-emerald-400 mt-1">100% OK</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">Verificado</div>
+                                </div>
+                                <div class="bg-nodara-bg/80 border border-white/10 rounded-xl p-3">
+                                    <div class="text-[10px] text-slate-400 uppercase">Seguridad</div>
+                                    <div id="metric-firewall" class="text-sm font-bold text-nodara-cyan mt-1">Blindado</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">0 Amenazas</div>
+                                </div>
+                            </div>
+
+                            <!-- Caja de Reporte Claro sin Jerga -->
+                            <div class="rounded-xl bg-gradient-to-r from-nodara-primary/15 to-nodara-cyan/10 border border-nodara-cyan/30 p-4 transition-all">
+                                <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-nodara-cyan mb-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                                    <span>Reporte Claro NODARA (Sin Tecnicismos)</span>
+                                </div>
+                                <p id="noc-human-text" class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                                    Tus servidores empresariales y bases de datos operan con fluidez total. El respaldo automático de hoy ya fue probado y verificado: tu información está 100% segura.
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. PROBLEMAS VS. SOLUCIONES (COMPARATIVA INTERACTIVA) -->
+        <section id="comparativa" class="py-20 lg:py-24 bg-nodara-surface border-y border-white/10 reveal-on-scroll">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+                    <div class="max-w-2xl">
+                        <span class="text-nodara-cyan font-mono font-semibold text-xs uppercase tracking-widest">De lo Reactivo a lo Preventivo</span>
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">
+                            6 riesgos operativos que eliminamos en tu empresa
+                        </h2>
+                        <p class="text-slate-400 mt-3 text-base">
+                            Alterna entre los problemas más comunes en la administración de servidores y la solución preventiva que implementa <strong class="text-white">NODARA Server Solutions</strong>.
+                        </p>
+                    </div>
+
+                    <!-- Switch Interactivo de Vista -->
+                    <div class="inline-flex p-1.5 rounded-2xl bg-nodara-bg border border-white/10 self-start">
+                        <button type="button" id="btn-view-nodara" onclick="switchComparisonView('nodara')" class="px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-nodara-primary text-white shadow transition-all">
+                            🛡️ Solución NODARA
+                        </button>
+                        <button type="button" id="btn-view-reactive" onclick="switchComparisonView('reactive')" class="px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">
+                            ⚠️ Problema Común
+                        </button>
+                        <button type="button" id="btn-view-split" onclick="switchComparisonView('split')" class="hidden sm:inline-block px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">
+                            ⇄ Ver Comparativa
+                        </button>
+                    </div>
+                </div>
+
+                <div id="comparison-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Renderizado dinámico -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. CATÁLOGO DE SERVICIOS EN BENTO GRID -->
+        <section id="servicios" class="py-20 lg:py-28 bg-nodara-bg reveal-on-scroll">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-14">
+                    <span class="text-nodara-cyan font-mono font-semibold text-xs uppercase tracking-widest">Servicios Especializados</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">
+                        Gestión Integral de Infraestructura de Servidores
+                    </h2>
+                    <p class="text-slate-400 mt-3 text-base">
+                        Soluciones técnicas completas adaptadas al tamaño real y las necesidades operativas de tu organización.
+                    </p>
+                </div>
+
+                <!-- Bento Grid de 5 Servicios -->
+                <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+                    
+                    <!-- Servicio 1 -->
+                    <div class="md:col-span-3 glass-card rounded-2xl p-7 flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-nodara-primary/20 border border-nodara-primary/40 flex items-center justify-center text-nodara-cyan mb-5">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-2.5">
+                                1. Instalación y Administración Físico / Virtual
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Diseño, implementación, configuración y administración integral de servidores físicos y virtuales en entornos <strong class="text-white">Linux y Windows Server</strong>, dimensionados exactamente a la carga de tu empresa.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-white/10 flex flex-wrap gap-2 font-mono text-xs">
+                            <span class="px-2.5 py-1 rounded-md bg-white/5 text-nodara-cyan">Linux & Windows Server</span>
+                            <span class="px-2.5 py-1 rounded-md bg-white/5 text-slate-300">Virtualización</span>
+                        </div>
+                    </div>
+
+                    <!-- Servicio 2 -->
+                    <div class="md:col-span-3 glass-card rounded-2xl p-7 flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-nodara-primary/20 border border-nodara-primary/40 flex items-center justify-center text-nodara-cyan mb-5">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-2.5">
+                                2. Monitoreo 24/7 y Mantenimiento Preventivo
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Vigilancia constante de rendimiento, disponibilidad y seguridad. Detectamos señales tempranas de fallo o lentitud para actuar antes de que afecten a tus colaboradores o clientes.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-white/10 flex flex-wrap gap-2 font-mono text-xs">
+                            <span class="px-2.5 py-1 rounded-md bg-white/5 text-emerald-400">● Alertas Tempranas</span>
+                            <span class="px-2.5 py-1 rounded-md bg-white/5 text-slate-300">Revisiones Programadas</span>
+                        </div>
+                    </div>
+
+                    <!-- Servicio 3 -->
+                    <div class="md:col-span-2 glass-card rounded-2xl p-7 flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-nodara-primary/20 border border-nodara-primary/40 flex items-center justify-center text-nodara-cyan mb-5">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            </div>
+                            <h3 class="font-display text-lg font-bold text-white mb-2.5">
+                                3. Copias de Seguridad Verificadas
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Gestión de respaldos automatizados, pruebas periódicas de recuperación ante fallos y continuidad operativa para proteger toda tu información crítica.
+                            </p>
+                        </div>
+                        <div class="mt-5 pt-4 border-t border-white/10 font-mono text-xs text-nodara-cyan">
+                            ● Recuperabilidad Comprobada
+                        </div>
+                    </div>
+
+                    <!-- Servicio 4 -->
+                    <div class="md:col-span-2 glass-card rounded-2xl p-7 flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-nodara-primary/20 border border-nodara-primary/40 flex items-center justify-center text-nodara-cyan mb-5">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                            </div>
+                            <h3 class="font-display text-lg font-bold text-white mb-2.5">
+                                4. Optimización y Seguridad Reforzada
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Afinación de recursos, almacenamiento, redes, bases de datos, servicios de directorio y aplicaciones alojadas para operar con velocidad y protección.
+                            </p>
+                        </div>
+                        <div class="mt-5 pt-4 border-t border-white/10 font-mono text-xs text-slate-300">
+                            ● Redes / BD / Directorio Activo
+                        </div>
+                    </div>
+
+                    <!-- Servicio 5 -->
+                    <div class="md:col-span-2 glass-card rounded-2xl p-7 flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-nodara-primary/20 border border-nodara-primary/40 flex items-center justify-center text-nodara-cyan mb-5">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
+                            </div>
+                            <h3 class="font-display text-lg font-bold text-white mb-2.5">
+                                5. Soporte Cercano y Reportes Claros
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Acompañamiento personalizado, resolución ágil de incidencias y explicaciones directas sin tecnicismos confusos para una toma de decisiones segura.
+                            </p>
+                        </div>
+                        <div class="mt-5 pt-4 border-t border-white/10 font-mono text-xs text-emerald-400">
+                            ● Atención Directa sin Intermediarios
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. COMPROMISOS DE SERVICIO -->
+        <section id="garantias" class="py-20 lg:py-24 bg-nodara-surface border-y border-white/10 reveal-on-scroll">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-14">
+                    <span class="text-nodara-cyan font-mono font-semibold text-xs uppercase tracking-widest">Garantía Operativa</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">
+                        Nuestros compromisos con la estabilidad de tu negocio
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                    
+                    <div class="glass-card rounded-2xl p-7 text-center">
+                        <div class="w-14 h-14 mx-auto rounded-2xl bg-nodara-primary/20 border border-nodara-cyan/30 flex items-center justify-center font-mono font-bold text-nodara-cyan text-lg mb-4">
+                            &gt;99.5%
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-2">
+                            Disponibilidad Superior al 99.5%
+                        </h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Mantenemos tus servidores activos, estables y monitoreados constantemente para evitar interrupciones inesperadas en tu operación diaria.
+                        </p>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-7 text-center">
+                        <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center font-mono font-bold text-emerald-400 text-xl mb-4">
+                            0
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-2">
+                            Cero Pérdida de Información
+                        </h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Respaldos automatizados y verificados periódicamente que garantizan la integridad y recuperabilidad total de tus datos críticos.
+                        </p>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-7 text-center">
+                        <div class="w-14 h-14 mx-auto rounded-2xl bg-nodara-primary/20 border border-nodara-cyan/30 flex items-center justify-center text-nodara-cyan mb-4">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-2">
+                            Atención Personalizada y Justa
+                        </h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Escuchamos tu realidad y proponemos exactamente lo que tu empresa necesita: ni gastos innecesarios, ni soporte distante.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. DIAGNÓSTICO INTERACTIVO DE INFRAESTRUCTURA Y RIESGO -->
+        <section id="diagnostico-interactivo" class="py-20 lg:py-24 bg-nodara-bg reveal-on-scroll">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <span class="text-nodara-cyan font-mono font-semibold text-xs uppercase tracking-widest">Evaluación Rápida sin Costo</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">
+                        Diagnóstico Interactivo de Infraestructura y Riesgo
+                    </h2>
+                    <p class="text-slate-400 mt-3 text-base">
+                        Configura el perfil de tus servidores para conocer tu nivel de riesgo actual y solicitar una cotización personalizada al instante.
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-3xl p-6 sm:p-8 lg:p-10 border border-white/10">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+                        
+                        <!-- Panel de Configuración (7 columnas) -->
+                        <div class="lg:col-span-7 space-y-7">
+                            
+                            <!-- Paso 1: Cantidad de Servidores -->
+                            <div>
+                                <label class="block font-display font-bold text-white text-sm sm:text-base mb-3">
+                                    1. ¿Cuántos servidores físicos o virtuales administra tu empresa?
+                                </label>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <button type="button" data-val="1-2 Servidores" data-tier="Esencial" onclick="selectCalcOption('servers', this)" class="calc-opt-servers p-3.5 rounded-xl bg-nodara-primary/20 border-2 border-nodara-primary text-left transition-all">
+                                        <div class="font-mono font-bold text-white text-sm">1 - 2</div>
+                                        <div class="text-xs text-slate-300 mt-0.5">Servidores</div>
+                                    </button>
+                                    <button type="button" data-val="3-5 Servidores" data-tier="Crecimiento" onclick="selectCalcOption('servers', this)" class="calc-opt-servers p-3.5 rounded-xl bg-nodara-bg border border-white/10 hover:border-white/30 text-left transition-all">
+                                        <div class="font-mono font-bold text-white text-sm">3 - 5</div>
+                                        <div class="text-xs text-slate-400 mt-0.5">Servidores</div>
+                                    </button>
+                                    <button type="button" data-val="6-15 Servidores" data-tier="Empresarial" onclick="selectCalcOption('servers', this)" class="calc-opt-servers p-3.5 rounded-xl bg-nodara-bg border border-white/10 hover:border-white/30 text-left transition-all">
+                                        <div class="font-mono font-bold text-white text-sm">6 - 15</div>
+                                        <div class="text-xs text-slate-400 mt-0.5">Servidores</div>
+                                    </button>
+                                    <button type="button" data-val="+15 Servidores" data-tier="Corporativo" onclick="selectCalcOption('servers', this)" class="calc-opt-servers p-3.5 rounded-xl bg-nodara-bg border border-white/10 hover:border-white/30 text-left transition-all">
+                                        <div class="font-mono font-bold text-white text-sm">+15</div>
+                                        <div class="text-xs text-slate-400 mt-0.5">Servidores</div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Paso 2: Entorno Tecnológico -->
+                            <div>
+                                <label class="block font-display font-bold text-white text-sm sm:text-base mb-3">
+                                    2. ¿Qué tipo de entorno operan actualmente?
+                                </label>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <button type="button" data-val="Servidores Físicos" onclick="selectCalcOption('env', this)" class="calc-opt-env p-3 rounded-xl bg-nodara-primary/20 border-2 border-nodara-primary text-xs sm:text-sm font-semibold text-white transition-all">
+                                        Físico
+                                    </button>
+                                    <button type="button" data-val="Entorno Virtualizado" onclick="selectCalcOption('env', this)" class="calc-opt-env p-3 rounded-xl bg-nodara-bg border border-white/10 hover:border-white/30 text-xs sm:text-sm font-semibold text-slate-300 transition-all">
+                                        Virtualizado
+                                    </button>
+                                    <button type="button" data-val="Híbrido / Nube" onclick="selectCalcOption('env', this)" class="calc-opt-env p-3 rounded-xl bg-nodara-bg border border-white/10 hover:border-white/30 text-xs sm:text-sm font-semibold text-slate-300 transition-all">
+                                        Híbrido
+                                    </button>
+                                    <button type="button" data-val="Linux & Windows Server" onclick="selectCalcOption('env', this)" class="calc-opt-env p-3 rounded-xl bg-nodara-bg border border-white/10 hover:border-white/30 text-xs sm:text-sm font-semibold text-slate-300 transition-all">
+                                        Linux / Windows
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Paso 3: Estado Actual -->
+                            <div>
+                                <label class="block font-display font-bold text-white text-sm sm:text-base mb-3">
+                                    3. Selecciona las condiciones actuales de tu infraestructura:
+                                </label>
+                                <div class="space-y-2.5">
+                                    <label class="flex items-center gap-3 p-3.5 rounded-xl bg-nodara-bg border border-white/10 hover:border-nodara-cyan/40 cursor-pointer transition-all">
+                                        <input type="checkbox" value="Sin monitoreo 24/7 continuo" data-risk="35" checked onchange="updateRiskDiagnostic()" class="risk-checkbox w-4 h-4 rounded text-nodara-primary bg-slate-800 border-slate-600 focus:ring-0">
+                                        <span class="text-sm text-slate-200">No tenemos monitoreo continuo 24/7 para detectar fallos a tiempo</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-3.5 rounded-xl bg-nodara-bg border border-white/10 hover:border-nodara-cyan/40 cursor-pointer transition-all">
+                                        <input type="checkbox" value="Backups sin pruebas de recuperación" data-risk="40" checked onchange="updateRiskDiagnostic()" class="risk-checkbox w-4 h-4 rounded text-nodara-primary bg-slate-800 border-slate-600 focus:ring-0">
+                                        <span class="text-sm text-slate-200">Los respaldos existen, pero no se comprueba periódicamente su restauración</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-3.5 rounded-xl bg-nodara-bg border border-white/10 hover:border-nodara-cyan/40 cursor-pointer transition-all">
+                                        <input type="checkbox" value="Mantenimiento solo ante emergencias" data-risk="25" onchange="updateRiskDiagnostic()" class="risk-checkbox w-4 h-4 rounded text-nodara-primary bg-slate-800 border-slate-600 focus:ring-0">
+                                        <span class="text-sm text-slate-200">Solo se revisan los equipos cuando presentan lentitud o caídas</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Panel de Resultado y Solicitud de Cotización (5 columnas) -->
+                        <div class="lg:col-span-5 bg-nodara-bg border border-white/15 rounded-2xl p-6 flex flex-col justify-between space-y-5">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="font-mono text-xs uppercase tracking-wider text-slate-400">Diagnóstico Generado</span>
+                                    <span id="risk-badge" class="font-mono text-xs font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40">
+                                        RIESGO CRÍTICO (90%)
+                                    </span>
+                                </div>
+
+                                <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden mb-5">
+                                    <div id="risk-meter-bar" class="h-full bg-gradient-to-r from-amber-500 to-rose-500 transition-all duration-500" style="width: 90%"></div>
+                                </div>
+
+                                <div class="p-4 rounded-xl bg-nodara-card border border-nodara-primary/30 mb-4">
+                                    <div class="text-xs text-nodara-cyan font-mono uppercase">Recomendación NODARA</div>
+                                    <div id="recommended-plan-title" class="font-display text-xl font-bold text-white mt-1">
+                                        Plan Esencial NODARA (1-2 Servidores)
+                                    </div>
+                                    <p id="recommended-plan-desc" class="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                                        Cobertura integral para servidores físicos: monitoreo continuo 24/7, auditoría y prueba de recuperación de respaldos, mantenimiento preventivo y reportes claros.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label for="calc-company-input" class="block text-[11px] font-mono text-slate-400 uppercase mb-1.5">Nombre de tu empresa (opcional para cotización)</label>
+                                    <input type="text" id="calc-company-input" placeholder="Ej. Grupo Industrial del Sureste" class="w-full bg-nodara-card border border-white/10 focus:border-nodara-cyan rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none">
+                                </div>
+                            </div>
+
+                            <!-- Botones de Cotización Directa -->
+                            <div class="space-y-2.5 pt-2 border-t border-white/10">
+                                <button type="button" onclick="sendDiagnosticWhatsApp()" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-5 rounded-xl shadow-lg shadow-emerald-600/20 transition-all text-sm">
+                                    <span>Cotizar por WhatsApp (9993341058)</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                </button>
+                                <button type="button" onclick="sendDiagnosticEmail()" class="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-slate-200 border border-white/15 font-semibold py-3 px-5 rounded-xl transition-all text-xs sm:text-sm">
+                                    <span>Cotizar por Correo (victor99basto@gmail.com)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. EQUIPO DIRECTIVO Y CONTACTO DIRECTO -->
+        <section id="equipo" class="py-20 lg:py-28 bg-nodara-surface border-t border-white/10 reveal-on-scroll">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Equipo Directivo -->
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-nodara-cyan font-mono font-semibold text-xs uppercase tracking-widest">Equipo Directivo</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">
+                        Tu infraestructura en manos de especialistas cercanos
+                    </h2>
+                    <p class="text-slate-400 mt-3 text-base">
+                        Combinamos conocimiento técnico especializado con trato humano, directo y transparente.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-20">
+                    <!-- Directivo 1 -->
+                    <div class="glass-card rounded-2xl p-6 sm:p-7">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-nodara-primary to-blue-800 flex items-center justify-center text-white font-display font-extrabold text-xl flex-shrink-0 shadow-lg shadow-nodara-primary/25">
+                                VB
+                            </div>
+                            <div>
+                                <span class="inline-block font-mono text-[11px] font-semibold uppercase tracking-wider text-nodara-cyan bg-nodara-primary/15 px-2.5 py-0.5 rounded-full mb-1.5">
+                                    Director Técnico • Contacto Principal
+                                </span>
+                                <h3 class="font-display text-lg sm:text-xl font-bold text-white">
+                                    Víctor Alejandro Basto Dzib
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                                    Especialista en Administración de Servidores Linux/Windows, Virtualización, Seguridad y Monitoreo Preventivo.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-5 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+                            <a href="tel:9993341058" class="text-slate-300 hover:text-nodara-cyan transition-colors">📞 999 334 1058</a>
+                            <a href="mailto:victor99basto@gmail.com" class="text-slate-300 hover:text-nodara-cyan transition-colors">✉️ victor99basto@gmail.com</a>
+                        </div>
+                    </div>
+
+                    <!-- Directivo 2 -->
+                    <div class="glass-card rounded-2xl p-6 sm:p-7">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-800 border border-white/15 flex items-center justify-center text-nodara-cyan font-display font-extrabold text-xl flex-shrink-0">
+                                LS
+                            </div>
+                            <div>
+                                <span class="inline-block font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-300 bg-white/10 px-2.5 py-0.5 rounded-full mb-1.5">
+                                    Co-Fundador • Estrategia y Operaciones
+                                </span>
+                                <h3 class="font-display text-lg sm:text-xl font-bold text-white">
+                                    Luis Fernando Santos Cauich
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                                    Especialista en Continuidad Operativa, Optimización de Recursos y Atención Personalizada al Cliente.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
+                            <span>📍 Mérida, Yucatán</span>
+                            <span class="text-emerald-400">● Atención Directa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloque de Contacto Directo -->
+                <div id="contacto" class="grid grid-cols-1 lg:grid-cols-12 gap-10 pt-10 border-t border-white/10">
+                    <div class="lg:col-span-5 space-y-5">
+                        <span class="text-nodara-cyan font-mono font-semibold text-xs uppercase tracking-widest">Contacto Directo</span>
+                        <h3 class="font-display text-2xl sm:text-3xl font-bold text-white leading-tight">
+                            Hablemos sobre la estabilidad de tus servidores
+                        </h3>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            Acércate sin compromiso. Escuchamos tus necesidades y preparamos una solución clara y ajustada al tamaño de tu empresa.
+                        </p>
+
+                        <div class="space-y-3 pt-2">
+                            <div class="glass-card rounded-2xl p-4 flex items-center justify-between gap-2">
+                                <div>
+                                    <div class="text-xs text-slate-400 font-mono">Teléfono / WhatsApp • Víctor Basto</div>
+                                    <div class="font-mono font-bold text-white text-base mt-0.5">999 334 1058</div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="copyToClipboard('9993341058', 'Teléfono 999 334 1058 copiado')" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-slate-300">
+                                        Copiar
+                                    </button>
+                                    <a href="https://wa.me/529993341058" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold">
+                                        WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="glass-card rounded-2xl p-4 flex items-center justify-between gap-2">
+                                <div class="min-w-0">
+                                    <div class="text-xs text-slate-400 font-mono">Correo Electrónico</div>
+                                    <div class="font-mono font-bold text-white text-xs sm:text-sm truncate mt-0.5">victor99basto@gmail.com</div>
+                                </div>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <button type="button" onclick="copyToClipboard('victor99basto@gmail.com', 'Correo victor99basto@gmail.com copiado')" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-slate-300">
+                                        Copiar
+                                    </button>
+                                    <a href="mailto:victor99basto@gmail.com" class="px-3.5 py-2 rounded-xl bg-nodara-primary hover:bg-blue-500 text-white text-xs font-bold">
+                                        Email
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7">
+                        <div class="glass-card rounded-3xl p-6 sm:p-8 border border-white/15">
+                            <h4 class="font-display text-xl font-bold text-white mb-2">
+                                Envíanos un mensaje rápido
+                            </h4>
+                            <p class="text-xs sm:text-sm text-slate-400 mb-5">
+                                Genera tu mensaje personalizado para enviarlo por WhatsApp o Correo Electrónico.
+                            </p>
+                            <form id="contact-form" class="space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="f-name" class="block text-xs font-mono text-slate-300 uppercase mb-1.5">Tu Nombre *</label>
+                                        <input type="text" id="f-name" required placeholder="Ej. Ing. Carlos Méndez" class="w-full bg-nodara-bg border border-white/15 focus:border-nodara-cyan rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label for="f-company" class="block text-xs font-mono text-slate-300 uppercase mb-1.5">Empresa *</label>
+                                        <input type="text" id="f-company" required placeholder="Ej. Logística Peninsular" class="w-full bg-nodara-bg border border-white/15 focus:border-nodara-cyan rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 outline-none">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="f-message" class="block text-xs font-mono text-slate-300 uppercase mb-1.5">¿Cómo podemos apoyarte?</label>
+                                    <textarea id="f-message" rows="3" placeholder="Cuéntanos brevemente cuántos servidores tienes o qué servicio te interesa..." class="w-full bg-nodara-bg border border-white/15 focus:border-nodara-cyan rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 outline-none"></textarea>
+                                </div>
+                                <div class="flex flex-col sm:flex-row gap-3 pt-1">
+                                    <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-5 rounded-xl text-sm transition-all">
+                                        Enviar por WhatsApp
+                                    </button>
+                                    <button type="button" onclick="submitContactEmail()" class="bg-nodara-primary hover:bg-blue-500 text-white font-semibold py-3.5 px-5 rounded-xl text-sm transition-all">
+                                        Enviar por Correo
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 8. FOOTER PÚBLICO LIMPIO (SIN DATOS INTERNOS/ACADÉMICOS) -->
+        <footer class="bg-nodara-bg border-t border-white/10 pt-12 pb-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/10">
+                    <div class="space-y-2 max-w-md">
+                        <a href="#inicio" class="inline-flex items-center gap-3">
+                            <svg class="w-9 h-9 flex-shrink-0" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <line x1="6" y1="38" x2="26" y2="38" stroke="#1D7AFC" stroke-width="3.8" stroke-linecap="round"/>
+                                <circle cx="6" cy="38" r="4.5" fill="#38BDF8"/>
+                                <line x1="6" y1="82" x2="26" y2="82" stroke="#1D7AFC" stroke-width="3.8" stroke-linecap="round"/>
+                                <circle cx="6" cy="82" r="4.5" fill="#38BDF8"/>
+                                <polygon points="62,14 98,35 98,85 62,106 26,85 26,35" stroke="#FFFFFF" stroke-width="3.8" fill="none"/>
+                                <polyline points="62,14 98,35 98,85 62,106" stroke="#1D7AFC" stroke-width="3.8" fill="none"/>
+                                <polygon points="62,22 91,39 91,81 62,98 33,81 33,39" fill="#1D7AFC"/>
+                                <circle cx="62" cy="14" r="5" fill="#1D7AFC"/>
+                                <circle cx="98" cy="35" r="5" fill="#38BDF8"/>
+                                <circle cx="98" cy="85" r="5" fill="#38BDF8"/>
+                                <circle cx="62" cy="106" r="5" fill="#1D7AFC"/>
+                                <circle cx="26" cy="85" r="5" fill="#1D7AFC"/>
+                                <circle cx="26" cy="35" r="5" fill="#1D7AFC"/>
+                                <rect x="42" y="39" width="40" height="10.5" rx="2.5" fill="#070B14"/>
+                                <circle cx="75.5" cy="44.2" r="2.4" fill="#38BDF8"/>
+                                <rect x="42" y="54.5" width="40" height="10.5" rx="2.5" fill="#070B14"/>
+                                <circle cx="75.5" cy="59.7" r="2.4" fill="#38BDF8"/>
+                                <rect x="42" y="70" width="40" height="10.5" rx="2.5" fill="#070B14"/>
+                                <circle cx="75.5" cy="75.2" r="2.4" fill="#38BDF8"/>
+                            </svg>
+                            <div>
+                                <div class="font-display font-extrabold text-lg tracking-wider leading-none">
+                                    <span class="text-white">NODA</span><span class="text-nodara-primary">RA</span>
+                                </div>
+                                <span class="text-[9px] font-mono tracking-[0.26em] text-slate-400 uppercase block mt-1">SERVER SOLUTIONS</span>
+                            </div>
+                        </a>
+                        <p class="text-xs sm:text-sm text-slate-400">
+                            Gestión Integral de Servidores físicos y virtuales con monitoreo continuo, mantenimiento preventivo y explicaciones claras.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-5 text-xs sm:text-sm text-slate-400">
+                        <a href="#comparativa" class="hover:text-white transition-colors">Soluciones</a>
+                        <a href="#servicios" class="hover:text-white transition-colors">Servicios</a>
+                        <a href="#garantias" class="hover:text-white transition-colors">Compromisos</a>
+                        <a href="#diagnostico-interactivo" class="hover:text-white transition-colors">Diagnóstico</a>
+                        <button type="button" onclick="openAdminLoginModal()" class="inline-flex items-center gap-1.5 text-nodara-cyan hover:text-white font-mono text-xs px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 transition-colors">
+                            <span>🔒 Portal Socios</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                    <p>© 2026 NODARA Server Solutions • Mérida, Yucatán, México.</p>
+                    <p>Contacto Comercial: <a href="mailto:victor99basto@gmail.com" class="text-slate-400 hover:text-nodara-cyan">victor99basto@gmail.com</a> • <a href="tel:9993341058" class="text-slate-400 hover:text-nodara-cyan">999 334 1058</a></p>
+                </div>
+            </div>
+        </footer>
+
+    </div> <!-- Fin de #public-website-view -->
+
+
+    <!-- ===================================================================== -->
+    <!-- ============ MODAL DE INICIO DE SESIÓN PARA ADMINISTRADORES =========== -->
+    <!-- ===================================================================== -->
+    <div id="admin-login-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        <div class="bg-nodara-card border border-nodara-cyan/40 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl shadow-nodara-primary/25 relative">
+            <button type="button" onclick="closeAdminLoginModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors" aria-label="Cerrar">
+                ✕
+            </button>
+
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-11 h-11 rounded-2xl bg-nodara-primary/20 border border-nodara-cyan/40 flex items-center justify-center text-nodara-cyan">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <div>
+                    <span class="font-mono text-[10px] uppercase tracking-widest text-nodara-cyan block">Acceso Restringido</span>
+                    <h3 class="font-display text-xl font-bold text-white">NODARA Admin Core</h3>
+                </div>
+            </div>
+
+            <p class="text-xs sm:text-sm text-slate-400 mb-5 leading-relaxed">
+                Inicia sesión con tus credenciales de socio administrador para consultar la estrategia interna, matriz SMART, perfil Buyer Persona y prospectos recibidos.
+            </p>
+
+            <!-- Mensaje de error de autenticación -->
+            <div id="login-error-box" class="hidden mb-4 p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs font-medium">
+                Usuario o contraseña incorrectos. Verifica tus credenciales.
+            </div>
+
+            <form id="admin-login-form" class="space-y-4">
+                <div>
+                    <label for="admin-username" class="block text-xs font-mono text-slate-300 uppercase mb-1.5">Usuario Administrador</label>
+                    <input type="text" id="admin-username" required autocomplete="username" placeholder="Ej. victor.basto" class="w-full bg-nodara-bg border border-white/15 focus:border-nodara-cyan rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 outline-none">
+                </div>
+                <div>
+                    <label for="admin-password" class="block text-xs font-mono text-slate-300 uppercase mb-1.5">Contraseña</label>
+                    <input type="password" id="admin-password" required autocomplete="current-password" placeholder="••••••••••" class="w-full bg-nodara-bg border border-white/15 focus:border-nodara-cyan rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 outline-none">
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-nodara-primary to-nodara-royal hover:from-blue-500 hover:to-nodara-primary text-white font-bold py-3.5 px-5 rounded-xl shadow-lg shadow-nodara-primary/30 transition-all text-sm">
+                    Iniciar Sesión en Portal Privado
+                </button>
+            </form>
+
+            <!-- Tarjeta colapsable de ayuda / autollenado rápido para demostración -->
+            <div class="mt-5 pt-4 border-t border-white/10">
+                <button type="button" onclick="toggleDemoCredentials()" class="w-full flex items-center justify-between text-xs font-mono text-slate-400 hover:text-nodara-cyan transition-colors">
+                    <span>🔑 Credenciales de acceso rápido (Demo Socios)</span>
+                    <span id="demo-cred-arrow">▼</span>
+                </button>
+                <div id="demo-credentials-panel" class="hidden mt-3 p-3.5 rounded-xl bg-nodara-bg border border-white/10 space-y-2.5 text-xs">
+                    <div class="flex items-center justify-between gap-2">
+                        <div>
+                            <div class="font-mono text-white font-semibold">victor.basto</div>
+                            <div class="text-[11px] text-slate-400">Director Técnico • Pass: <span class="text-nodara-cyan font-mono">Nodara2026!</span></div>
+                        </div>
+                        <button type="button" onclick="autofillAdmin('victor.basto', 'Nodara2026!')" class="px-2.5 py-1.5 rounded-lg bg-nodara-primary/20 hover:bg-nodara-primary text-nodara-cyan hover:text-white font-mono text-[11px] transition-colors">
+                            Autollenar
+                        </button>
+                    </div>
+                    <div class="border-t border-white/10 pt-2.5 flex items-center justify-between gap-2">
+                        <div>
+                            <div class="font-mono text-white font-semibold">luis.santos</div>
+                            <div class="text-[11px] text-slate-400">Co-Fundador • Pass: <span class="text-nodara-cyan font-mono">Nodara2026!</span></div>
+                        </div>
+                        <button type="button" onclick="autofillAdmin('luis.santos', 'Nodara2026!')" class="px-2.5 py-1.5 rounded-lg bg-nodara-primary/20 hover:bg-nodara-primary text-nodara-cyan hover:text-white font-mono text-[11px] transition-colors">
+                            Autollenar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ===================================================================== -->
+    <!-- ================ VISTA 2: PORTAL PRIVADO DE ADMINISTRADORES =========== -->
+    <!-- ===================================================================== -->
+    <div id="admin-dashboard-view" class="hidden min-h-screen bg-nodara-bg text-slate-100">
+        
+        <!-- Barra Superior de Sesión Activa -->
+        <header class="sticky top-0 z-40 bg-nodara-surface/95 backdrop-blur-xl border-b border-nodara-primary/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-wrap items-center justify-between min-h-[4.5rem] py-2 gap-3">
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-nodara-primary flex items-center justify-center font-display font-extrabold text-white text-sm shadow-lg shadow-nodara-primary/30">
+                            N
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-display font-bold text-white text-base sm:text-lg">NODARA Admin Core</span>
+                                <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">CONFIDENCIAL</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 font-mono">Panel Estratégico y Gestión Interna</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <div id="admin-active-name" class="text-xs font-bold text-white">Víctor Alejandro Basto Dzib</div>
+                            <div id="admin-active-role" class="text-[11px] font-mono text-nodara-cyan">Director Técnico / Contacto Principal</div>
+                        </div>
+                        <button type="button" onclick="logoutAdmin()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs font-bold transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                            <span>Cerrar Sesión</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
+        <!-- Navegación de Pestañas Internas -->
+        <div class="bg-nodara-surface/60 border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex overflow-x-auto gap-2 py-3 no-scrollbar" role="tablist">
+                    <button type="button" onclick="switchAdminTab('estrategia')" id="tab-btn-estrategia" class="admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-nodara-primary text-white shadow transition-all">
+                        1. Estrategia y Mercado Interno
+                    </button>
+                    <button type="button" onclick="switchAdminTab('smart')" id="tab-btn-smart" class="admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                        2. Matriz Objetivos SMART
+                    </button>
+                    <button type="button" onclick="switchAdminTab('buyer')" id="tab-btn-buyer" class="admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                        3. Buyer Persona y Ventas
+                    </button>
+                    <button type="button" onclick="switchAdminTab('identidad')" id="tab-btn-identidad" class="admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                        4. Marca y Ficha Institucional
+                    </button>
+                    <button type="button" onclick="switchAdminTab('leads')" id="tab-btn-leads" class="admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2">
+                        <span>5. Prospectos y Diagnósticos</span>
+                        <span id="leads-count-badge" class="font-mono text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">2</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenedor Principal de las 5 Pestañas Privadas -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+
+            <!-- PESTAÑA 1: ESTRATEGIA Y MERCADO INTERNO -->
+            <div id="admin-tab-estrategia" class="admin-tab-panel space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-card rounded-2xl p-6 sm:p-7">
+                        <span class="font-mono text-xs text-nodara-cyan uppercase tracking-wider">Análisis Interno</span>
+                        <h3 class="font-display text-xl font-bold text-white mt-1 mb-3">Contexto de la Empresa</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Este servicio nace como respuesta a la necesidad de muchas empresas de contar con un aliado cercano que asuma la responsabilidad técnica de su infraestructura de servidores, traduciendo la complejidad técnica en estabilidad y tranquilidad. Su estructura ágil permite adaptarse a las necesidades específicas de cada organización, ya sea para administrar unos pocos equipos o para diseñar y mantener entornos más amplios.
+                        </p>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 sm:p-7">
+                        <span class="font-mono text-xs text-amber-400 uppercase tracking-wider">Diagnóstico Competitivo</span>
+                        <h3 class="font-display text-xl font-bold text-white mt-1 mb-3">Situación Actual y Brecha de Mercado</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                            La dependencia de los sistemas informáticos crece constantemente: empresas de todos los sectores necesitan servidores confiables para operar, pero muchas no cuentan con personal dedicado exclusivamente a su administración.
+                        </p>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            <strong class="text-white">Brecha detectada:</strong> Existen proveedores grandes muy estandarizados/remotos sin cercanía, o equipos internos sin tiempo ni especialización. Las empresas medianas buscan un servicio confiable, cercano y claro que mantenga sus servidores funcionando sin sorpresas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Propuesta de Valor Interna y Mensaje Clave -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border border-nodara-primary/30">
+                    <span class="font-mono text-xs text-nodara-cyan uppercase tracking-wider">Posicionamiento Estratégico</span>
+                    <h3 class="font-display text-xl sm:text-2xl font-bold text-white mt-1 mb-4">Propuesta de Valor y Mensaje Clave</h3>
+                    <div class="p-4 rounded-xl bg-nodara-bg border border-nodara-cyan/30 text-sm sm:text-base text-white font-medium mb-6">
+                        “Administramos y cuidamos tus servidores con monitoreo constante, mantenimiento preventivo, seguridad reforzada y explicaciones claras, para que tú te dediques a tu negocio con tranquilidad.”
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-5 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="font-mono text-xs font-bold text-nodara-cyan uppercase mb-2">1. Qué queremos que PIENSE</div>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Que somos el equipo técnico confiable que cuida la infraestructura que sostiene su empresa, con conocimiento y responsabilidad.
+                            </p>
+                        </div>
+                        <div class="p-5 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="font-mono text-xs font-bold text-emerald-400 uppercase mb-2">2. Qué queremos que SIENTA</div>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Tranquilidad, seguridad y confianza; la certeza de que sus sistemas están vigilados, protegidos y en buenas manos.
+                            </p>
+                        </div>
+                        <div class="p-5 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="font-mono text-xs font-bold text-amber-400 uppercase mb-2">3. Qué queremos que HAGA</div>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Acercarse sin miedo ni confusión, consultarnos y permitirnos encargarnos de su infraestructura tecnológica con el compromiso de mantenerla estable, segura y preparada para crecer.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 2: MATRIZ DE OBJETIVOS SMART -->
+            <div id="admin-tab-smart" class="admin-tab-panel hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border border-nodara-primary/30">
+                    <span class="font-mono text-xs text-nodara-cyan uppercase tracking-wider">Planificación Estratégica</span>
+                    <h3 class="font-display text-xl sm:text-2xl font-bold text-white mt-1 mb-3">Objetivo General</h3>
+                    <p class="text-sm sm:text-base text-slate-200 leading-relaxed">
+                        Posicionar el servicio de <strong class="text-white">Gestión Integral de Servidores</strong> como la opción confiable y preferida por empresas medianas, logrando estabilidad financiera, contratos recurrentes y referencias sólidas basadas en rendimiento y confianza.
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-2xl overflow-hidden border border-white/10">
+                    <div class="p-6 border-b border-white/10">
+                        <h4 class="font-display text-lg font-bold text-white">Matriz de Objetivos Específicos (Metodología SMART)</h4>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-nodara-bg/90 border-b border-white/10 font-mono text-xs text-nodara-cyan uppercase">
+                                    <th class="py-4 px-6 w-44">Criterio SMART</th>
+                                    <th class="py-4 px-6">Detalle Estratégico</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/10 text-sm">
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-4 px-6 font-display font-bold text-white">S — Específico</td>
+                                    <td class="py-4 px-6 text-slate-300">Lograr la preferencia como proveedor de gestión de servidores ofreciendo instalación, monitoreo, mantenimiento, optimización y respaldo de infraestructura física o virtual.</td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-4 px-6 font-display font-bold text-emerald-400">M — Medible</td>
+                                    <td class="py-4 px-6 text-slate-300">Alcanzar una cartera definida de clientes con contratos activos; mantener disponibilidad de servidores administrados <strong class="text-white">superior al 99.5%</strong>; registrar <strong class="text-white">cero pérdidas de información</strong> atribuibles a la gestión.</td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-4 px-6 font-display font-bold text-nodara-cyan">A — Alcanzable</td>
+                                    <td class="py-4 px-6 text-slate-300">Se priorizan empresas medianas con necesidades claras y presupuestos accesibles; se aprovecha la agilidad para brindar atención personalizada, seguimiento directo y explicaciones comprensibles, diferenciándose de grandes proveedores estandarizados.</td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-4 px-6 font-display font-bold text-amber-400">R — Relevante</td>
+                                    <td class="py-4 px-6 text-slate-300">Las empresas medianas son el motor de la región: requieren estabilidad tecnológica para competir, pero en muchos casos no disponen de equipos especializados. Atenderlas permite construir una base sólida de ingresos y referencias antes de ampliar la cobertura.</td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-4 px-6 font-display font-bold text-purple-400">T — Temporalizado</td>
+                                    <td class="py-4 px-6 text-slate-300">Consolidar la cartera de clientes y establecer procesos de gestión estandarizados en un plazo definido desde el inicio de operaciones.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 3: PERFIL BUYER PERSONA Y VENTAS -->
+            <div id="admin-tab-buyer" class="admin-tab-panel hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border border-nodara-primary/30">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+                        <div>
+                            <span class="font-mono text-xs text-nodara-cyan uppercase tracking-wider">Inteligencia Comercial</span>
+                            <h3 class="font-display text-xl sm:text-2xl font-bold text-white mt-1">Perfil Buyer Persona — Público Objetivo</h3>
+                            <p class="text-xs sm:text-sm text-slate-400 mt-1">Empresas medianas que requieran implementar, administrar, mantener, modernizar o asegurar la continuidad de su infraestructura.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="p-5 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="font-mono text-xs text-nodara-cyan uppercase font-bold mb-1.5">👤 Quién es</div>
+                            <p class="text-sm text-slate-200 leading-relaxed">Jefe de Sistemas, Director/a de TI, Gerente de Operaciones o Propietario/a de empresas medianas cuya operación depende de sus sistemas.</p>
+                        </div>
+                        <div class="p-5 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="font-mono text-xs text-nodara-cyan uppercase font-bold mb-1.5">🧠 Qué sabe</div>
+                            <p class="text-sm text-slate-200 leading-relaxed">Comprende la importancia de que los servidores funcionen bien, pero no necesariamente es especialista en administración profunda; necesita explicaciones claras y directas.</p>
+                        </div>
+                        <div class="p-5 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="font-mono text-xs text-emerald-400 uppercase font-bold mb-1.5">🎯 Sus metas</div>
+                            <p class="text-sm text-slate-200 leading-relaxed">Mantener los sistemas activos y rápidos, proteger la información de la empresa, evitar gastos imprevistos y presentar resultados confiables a la dirección.</p>
+                        </div>
+                        <div class="p-5 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="font-mono text-xs text-rose-400 uppercase font-bold mb-1.5">⚠️ Sus preocupaciones</div>
+                            <p class="text-sm text-slate-200 leading-relaxed">Que los servidores fallen en momentos críticos, perder información valiosa, no entender lo que ocurre técnicamente, pagar de más por servicios desajustados o quedarse sin soporte.</p>
+                        </div>
+                        <div class="p-5 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="font-mono text-xs text-amber-400 uppercase font-bold mb-1.5">🔍 Qué y Dónde busca</div>
+                            <p class="text-sm text-slate-200 leading-relaxed">Busca confianza, tranquilidad, respuestas rápidas e informes claros a través de recomendaciones de colegas, contactos del sector empresarial y redes profesionales.</p>
+                        </div>
+                        <div class="p-5 rounded-xl bg-nodara-primary/15 border border-nodara-cyan/30">
+                            <div class="font-mono text-xs text-nodara-cyan uppercase font-bold mb-1.5">🤝 Por qué contrata a NODARA</div>
+                            <p class="text-sm text-white leading-relaxed">Porque percibe que este servicio escucha sus necesidades, explica sin confundir, propone justo lo necesario —ni menos ni más— y está presente cuando se le requiere.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 4: IDENTIDAD DE MARCA Y FICHA ACADÉMICA/INSTITUCIONAL -->
+            <div id="admin-tab-identidad" class="admin-tab-panel hidden space-y-6">
+                
+                <!-- Ficha Institucional / Académica -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border border-amber-500/30">
+                    <span class="font-mono text-xs text-amber-400 uppercase tracking-wider">Registro Institucional y Académico</span>
+                    <h3 class="font-display text-xl sm:text-2xl font-bold text-white mt-1 mb-5">
+                        Grupo Tecnológico Universitario — Campus Mérida
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                        <div class="p-4 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="text-xs font-mono text-slate-400">Materia</div>
+                            <div class="font-bold text-white mt-1">Competitividad Estratégica Empresarial</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="text-xs font-mono text-slate-400">Docente</div>
+                            <div class="font-bold text-white mt-1">Mariot Leon Chan</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="text-xs font-mono text-slate-400">Integrantes del Equipo</div>
+                            <div class="font-bold text-white mt-1">• Víctor Alejandro Basto Dzib<br>• Luis Fernando Santos Cauich</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-nodara-bg border border-white/10">
+                            <div class="text-xs font-mono text-slate-400">Contacto Oficial</div>
+                            <div class="font-mono text-nodara-cyan mt-1 text-xs">Víctor Basto<br>9993341058<br>victor99basto@gmail.com</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Concepto del Nombre y Simbología del Logo -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-card rounded-2xl p-6 sm:p-7">
+                        <span class="font-mono text-xs text-nodara-cyan uppercase tracking-wider">Manual de Identidad</span>
+                        <h4 class="font-display text-lg font-bold text-white mt-1 mb-3">Significado del Nombre y Simbología del Logo</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                            Se escogió el nombre <strong class="text-white">Nodara</strong>, que viene de <em class="text-nodara-cyan">node</em> (nodo), la unidad básica de una red de servidores, con un final moderno y fácil de recordar.
+                        </p>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><strong class="text-white">• El hexágono:</strong> Evoca un nodo de red y un panal, es decir, muchas unidades trabajando juntas.</li>
+                            <li><strong class="text-white">• Las tres barras con puntos azules:</strong> Representan servidores apilados en un rack, con sus luces de estado.</li>
+                            <li><strong class="text-white">• Puntos en los seis vértices y dos líneas a la izquierda:</strong> Simbolizan un circuito conectado por nodos.</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 sm:p-7">
+                        <span class="font-mono text-xs text-emerald-400 uppercase tracking-wider">Competencias del Equipo</span>
+                        <h4 class="font-display text-lg font-bold text-white mt-1 mb-3">Habilidades Técnicas y Personales</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-300">
+                            <div class="p-3.5 rounded-xl bg-nodara-bg border border-white/10 space-y-1.5">
+                                <div class="font-bold text-nodara-cyan uppercase font-mono">Habilidades Técnicas</div>
+                                <p>• Servidores físicos y virtuales</p>
+                                <p>• Linux y Windows Server</p>
+                                <p>• Monitoreo de rendimiento y seguridad</p>
+                                <p>• Backups y continuidad del servicio</p>
+                                <p>• Bases de datos, directorio y redes</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-nodara-bg border border-white/10 space-y-1.5">
+                                <div class="font-bold text-emerald-400 uppercase font-mono">Habilidades Personales</div>
+                                <p>• Comunicación clara sin jerga innecesaria</p>
+                                <p>• Orientación y atención personalizada</p>
+                                <p>• Resolución ágil de incidencias</p>
+                                <p>• Coordinación con áreas de TI</p>
+                                <p>• Actualización tecnológica continua</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 5: PROSPECTOS Y DIAGNÓSTICOS RECIBIDOS -->
+            <div id="admin-tab-leads" class="admin-tab-panel hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <span class="font-mono text-xs text-emerald-400 uppercase tracking-wider">CRM & Cotizaciones</span>
+                            <h3 class="font-display text-xl sm:text-2xl font-bold text-white mt-1">
+                                Prospectos y Diagnósticos Generados en la Web
+                            </h3>
+                            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                                Incluye tanto diagnósticos realizados por visitantes en tiempo real como prospectos registrados para seguimiento comercial.
+                            </p>
+                        </div>
+                        <button type="button" onclick="resetDemoLeads()" class="self-start px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-slate-300 transition-colors">
+                            Restaurar Ejemplos
+                        </button>
+                    </div>
+
+                    <div id="admin-leads-list" class="space-y-4">
+                        <!-- Renderizado dinámico de prospectos -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div> <!-- Fin de #admin-dashboard-view -->
+
+
+    <!-- ==================== MODAL DE CONFIRMACIÓN PARA CLIENTES ==================== -->
+    <div id="confirmation-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+        <div class="bg-nodara-card border border-nodara-cyan/40 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5 text-emerald-400 font-display font-bold text-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span id="modal-title">¡Solicitud Lista!</span>
+                </div>
+                <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+            <p id="modal-body" class="text-sm text-slate-300 leading-relaxed">
+                Tu mensaje ha sido preparado correctamente.
+            </p>
+            <div class="flex gap-3 pt-2">
+                <a id="modal-action-link" href="#" target="_blank" rel="noopener noreferrer" onclick="closeModal()" class="flex-1 text-center bg-nodara-primary hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition-colors">
+                    Continuar ahora
+                </a>
+                <button type="button" onclick="closeModal()" class="px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-sm font-semibold">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== SCRIPTS DE APLICACIÓN ==================== -->
+    <script>
+        /* -----------------------------------------------------------
+           1. CANVAS DE NODOS CONECTADOS EN EL HERO
+        ----------------------------------------------------------- */
+        (function initNetworkCanvas() {
+            const canvas = document.getElementById('network-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height, nodes = [];
+
+            function resize() {
+                width = canvas.width = canvas.offsetWidth;
+                height = canvas.height = canvas.offsetHeight;
+                const count = Math.min(30, Math.floor((width * height) / 28000));
+                nodes = Array.from({ length: count }, () => ({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.45,
+                    vy: (Math.random() - 0.5) * 0.45,
+                    r: Math.random() * 2 + 1.5
+                }));
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                for (let i = 0; i < nodes.length; i++) {
+                    const n = nodes[i];
+                    n.x += n.vx;
+                    n.y += n.vy;
+                    if (n.x < 0 || n.x > width) n.vx *= -1;
+                    if (n.y < 0 || n.y > height) n.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.55)';
+                    ctx.fill();
+
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const m = nodes[j];
+                        const dist = Math.hypot(n.x - m.x, n.y - m.y);
+                        if (dist < 140) {
+                            ctx.beginPath();
+                            ctx.moveTo(n.x, n.y);
+                            ctx.lineTo(m.x, m.y);
+                            ctx.strokeStyle = `rgba(29, 122, 252, ${(1 - dist / 140) * 0.35})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            draw();
+        })();
+
+        /* -----------------------------------------------------------
+           2. MENÚ MÓVIL Y ANIMACIONES SCROLL
+        ----------------------------------------------------------- */
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('menu-icon-open');
+        const iconClose = document.getElementById('menu-icon-close');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            const hidden = mobileMenu.classList.toggle('hidden');
+            iconOpen.classList.toggle('hidden', !hidden);
+            iconClose.classList.toggle('hidden', hidden);
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+            });
+        });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => revealObserver.observe(el));
+
+        /* -----------------------------------------------------------
+           3. CONSOLA DEMO NODARA GUARDIAN
+        ----------------------------------------------------------- */
+        let currentNocMode = 'optimal';
+        let wavePoints = Array.from({ length: 28 }, () => 38);
+
+        function updateTelemetryWave() {
+            const line = document.getElementById('telemetry-line');
+            const area = document.getElementById('telemetry-area');
+            if (!line || !area) return;
+
+            let base = 36, variance = 10;
+            if (currentNocMode === 'backup') { base = 28; variance = 14; }
+            else if (currentNocMode === 'preventive') { base = 22; variance = 22; }
+
+            const nextVal = Math.max(8, Math.min(52, base + (Math.random() - 0.5) * variance));
+            wavePoints.shift();
+            wavePoints.push(nextVal);
+
+            const step = 400 / (wavePoints.length - 1);
+            let dLine = `M 0,${wavePoints[0].toFixed(1)}`;
+            for (let i = 1; i < wavePoints.length; i++) {
+                dLine += ` L ${(i * step).toFixed(1)},${wavePoints[i].toFixed(1)}`;
+            }
+            line.setAttribute('d', dLine);
+            area.setAttribute('d', `${dLine} L 400,60 L 0,60 Z`);
+        }
+
+        setInterval(() => {
+            updateTelemetryWave();
+            if (currentNocMode === 'optimal') {
+                const cpu = Math.floor(Math.random() * 7) + 20;
+                const ram = Math.floor(Math.random() * 5) + 44;
+                document.getElementById('metric-cpu').textContent = cpu + '%';
+                document.getElementById('bar-cpu').style.width = cpu + '%';
+                document.getElementById('metric-ram').textContent = ram + '%';
+                document.getElementById('bar-ram').style.width = ram + '%';
+            }
+        }, 1200);
+
+        function setNocMode(mode) {
+            currentNocMode = mode;
+            ['optimal', 'backup', 'preventive'].forEach(m => {
+                const btn = document.getElementById(`noc-btn-${m}`);
+                btn.className = m === mode
+                    ? 'py-2 px-2 rounded-lg text-xs font-semibold bg-nodara-primary text-white shadow transition-all'
+                    : 'py-2 px-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all';
+            });
+
+            const pill = document.getElementById('noc-status-pill');
+            const latency = document.getElementById('noc-latency');
+            const cpuEl = document.getElementById('metric-cpu');
+            const cpuBar = document.getElementById('bar-cpu');
+            const backupEl = document.getElementById('metric-backup');
+            const fwEl = document.getElementById('metric-firewall');
+            const humanText = document.getElementById('noc-human-text');
+
+            if (mode === 'optimal') {
+                pill.textContent = 'ESTADO: ÓPTIMO';
+                pill.className = 'font-mono text-[11px] px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+                latency.textContent = 'Latencia: 4.2 ms';
+                cpuEl.textContent = '23%';
+                cpuBar.style.width = '23%';
+                cpuBar.className = 'bg-emerald-400 h-full transition-all duration-500';
+                backupEl.textContent = '100% OK';
+                backupEl.className = 'text-sm font-bold text-emerald-400 mt-1';
+                fwEl.textContent = 'Blindado';
+                humanText.textContent = 'Tus servidores empresariales y bases de datos operan con fluidez total. El respaldo automático de hoy ya fue probado y verificado: tu información está 100% segura.';
+            } else if (mode === 'backup') {
+                pill.textContent = 'AUDITORÍA DE RESPALDO';
+                pill.className = 'font-mono text-[11px] px-2.5 py-1 rounded-md bg-nodara-primary/20 text-nodara-cyan border border-nodara-cyan/40';
+                latency.textContent = 'Integridad: Verificada';
+                cpuEl.textContent = '34%';
+                cpuBar.style.width = '34%';
+                cpuBar.className = 'bg-nodara-cyan h-full transition-all duration-500';
+                backupEl.textContent = 'VERIFICADO';
+                backupEl.className = 'text-sm font-bold text-nodara-cyan mt-1';
+                fwEl.textContent = 'Cifrado';
+                humanText.textContent = 'Acabamos de realizar una prueba de restauración sobre tus copias de seguridad. Confirmamos que toda tu información crítica puede recuperarse rápidamente sin pérdida de datos.';
+            } else if (mode === 'preventive') {
+                pill.textContent = 'ANOMALÍA RESUELTA';
+                pill.className = 'font-mono text-[11px] px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40';
+                latency.textContent = 'Respuesta: 1.8 ms';
+                cpuEl.textContent = '64% → 26%';
+                cpuBar.style.width = '26%';
+                cpuBar.className = 'bg-amber-400 h-full transition-all duration-500';
+                backupEl.textContent = 'Snapshot OK';
+                fwEl.textContent = 'Protegido';
+                humanText.textContent = 'Detectamos un aumento inusual de carga en el servidor principal y optimizamos los recursos antes de que tus usuarios notaran lentitud. Incidente prevenido sin interrupciones.';
+            }
+        }
+
+        /* -----------------------------------------------------------
+           4. PROBLEMAS VS SOLUCIONES (VISTA PÚBLICA)
+        ----------------------------------------------------------- */
+        const problemsSolutionsData = [
+            {
+                num: '01',
+                problemTitle: 'Falta de mantenimiento preventivo',
+                problemDesc: 'Los servidores se atienden solo cuando fallan, sin revisiones programadas, aumentando el riesgo de interrupciones inesperadas.',
+                solutionTitle: 'Mantenimiento preventivo programado',
+                solutionDesc: 'Revisiones periódicas planificadas y actualización controlada para evitar caídas antes de que afecten tu operación diaria.'
+            },
+            {
+                num: '02',
+                problemTitle: 'Configuraciones deficientes',
+                problemDesc: 'Equipos instalados sin criterios adecuados de rendimiento o seguridad; funcionan, pero no de forma óptima ni protegida.',
+                solutionTitle: 'Configuración segura y optimizada',
+                solutionDesc: 'Implementación y ajuste profesional en Linux y Windows Server con criterios altos de rendimiento y protección.'
+            },
+            {
+                num: '03',
+                problemTitle: 'Copias de seguridad no verificadas',
+                problemDesc: 'Existen respaldos, pero no se comprueba su recuperabilidad o no cubren toda la información crítica del negocio.',
+                solutionTitle: 'Respaldos verificados y recuperables',
+                solutionDesc: 'Copias automatizadas con pruebas periódicas de restauración para asegurar cero pérdidas de información crítica.'
+            },
+            {
+                num: '04',
+                problemTitle: 'Sobrecarga o desperdicio de recursos',
+                problemDesc: 'Servidores sobredimensionados con gastos innecesarios, o insuficientes que limitan el crecimiento del negocio.',
+                solutionTitle: 'Dimensionamiento justo a tu medida',
+                solutionDesc: 'Optimización de CPU, almacenamiento y redes: proponemos justo lo necesario para tu empresa, ni menos ni más.'
+            },
+            {
+                num: '05',
+                problemTitle: 'Falta de monitoreo continuo',
+                problemDesc: 'No se detectan a tiempo señales de fallo, lentitud o amenazas; los problemas se advierten cuando ya afectan a los usuarios.',
+                solutionTitle: 'Vigilancia constante 24/7',
+                solutionDesc: 'Monitoreo continuo de rendimiento, disponibilidad (>99.5%) y seguridad con detección temprana de anomalías.'
+            },
+            {
+                num: '06',
+                problemTitle: 'Gestión reactiva y confusa',
+                problemDesc: 'Se actúa solo ante emergencias, sin planificación de parches y con explicaciones técnicas difíciles de comprender.',
+                solutionTitle: 'Acompañamiento cercano y claro',
+                solutionDesc: 'Planificación preventiva e informes ejecutivos directos, sin jerga innecesaria, para tu total tranquilidad.'
+            }
+        ];
+
+        let comparisonMode = 'nodara';
+
+        function switchComparisonView(mode) {
+            comparisonMode = mode;
+            ['nodara', 'reactive', 'split'].forEach(m => {
+                const btn = document.getElementById(`btn-view-${m}`);
+                if (!btn) return;
+                btn.className = m === mode
+                    ? btn.className.replace('text-slate-400 hover:text-white', 'bg-nodara-primary text-white shadow')
+                    : btn.className.replace('bg-nodara-primary text-white shadow', 'text-slate-400 hover:text-white');
+            });
+            renderComparisonGrid();
+        }
+
+        function renderComparisonGrid() {
+            const container = document.getElementById('comparison-cards-container');
+            container.innerHTML = problemsSolutionsData.map(item => {
+                if (comparisonMode === 'split') {
+                    return `
+                        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono text-xs text-slate-500">NODO // ${item.num}</span>
+                                <span class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-nodara-primary/20 text-nodara-cyan">Antes vs. Nodara</span>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25">
+                                <div class="text-[11px] font-mono font-bold text-rose-400 uppercase mb-1">✕ Sin Gestión: ${item.problemTitle}</div>
+                                <p class="text-xs text-slate-400 leading-relaxed">${item.problemDesc}</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-nodara-primary/15 border border-nodara-cyan/30">
+                                <div class="text-[11px] font-mono font-bold text-nodara-cyan uppercase mb-1">✓ Con NODARA: ${item.solutionTitle}</div>
+                                <p class="text-xs text-slate-200 leading-relaxed">${item.solutionDesc}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const isNodara = comparisonMode === 'nodara';
+                return `
+                    <div class="glass-card rounded-2xl p-6 flex flex-col justify-between ${isNodara ? 'border-nodara-primary/35' : 'border-amber-500/30'}">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="font-mono text-xs font-bold px-3 py-1 rounded-full ${
+                                    isNodara
+                                    ? 'bg-nodara-primary/20 text-nodara-cyan border border-nodara-cyan/30'
+                                    : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                                }">
+                                    ${isNodara ? '✓ Solución NODARA' : '⚠️ Riesgo Frecuente'}
+                                </span>
+                                <span class="font-mono text-xs text-slate-500">${item.num}</span>
+                            </div>
+                            <h3 class="font-display text-lg font-bold text-white mb-2.5">
+                                ${isNodara ? item.solutionTitle : item.problemTitle}
+                            </h3>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                ${isNodara ? item.solutionDesc : item.problemDesc}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        renderComparisonGrid();
+
+        /* -----------------------------------------------------------
+           5. DIAGNÓSTICO INTERACTIVO + GUARDADO EN LOCALSTORAGE PARA ADMIN
+        ----------------------------------------------------------- */
+        const calcState = {
+            servers: '1-2 Servidores',
+            tier: 'Esencial',
+            env: 'Servidores Físicos'
+        };
+
+        function selectCalcOption(group, btn) {
+            const selector = group === 'servers' ? '.calc-opt-servers' : '.calc-opt-env';
+            document.querySelectorAll(selector).forEach(el => {
+                el.className = el.className
+                    .replace('bg-nodara-primary/20 border-2 border-nodara-primary', 'bg-nodara-bg border border-white/10 hover:border-white/30');
+            });
+            btn.className = btn.className
+                .replace('bg-nodara-bg border border-white/10 hover:border-white/30', 'bg-nodara-primary/20 border-2 border-nodara-primary');
+
+            if (group === 'servers') {
+                calcState.servers = btn.dataset.val;
+                calcState.tier = btn.dataset.tier;
+            } else {
+                calcState.env = btn.dataset.val;
+            }
+            updateRiskDiagnostic();
+        }
+
+        function updateRiskDiagnostic() {
+            const checkboxes = document.querySelectorAll('.risk-checkbox:checked');
+            let riskScore = 15;
+            checkboxes.forEach(cb => { riskScore += parseInt(cb.dataset.risk || '0', 10); });
+            riskScore = Math.min(100, riskScore);
+
+            const badge = document.getElementById('risk-badge');
+            const bar = document.getElementById('risk-meter-bar');
+            const planTitle = document.getElementById('recommended-plan-title');
+            const planDesc = document.getElementById('recommended-plan-desc');
+
+            bar.style.width = riskScore + '%';
+
+            if (riskScore >= 70) {
+                badge.textContent = `RIESGO CRÍTICO (${riskScore}%)`;
+                badge.className = 'font-mono text-xs font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40';
+                bar.className = 'h-full bg-gradient-to-r from-amber-500 to-rose-500 transition-all duration-500';
+            } else if (riskScore >= 40) {
+                badge.textContent = `RIESGO MODERADO (${riskScore}%)`;
+                badge.className = 'font-mono text-xs font-bold px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40';
+                bar.className = 'h-full bg-gradient-to-r from-nodara-cyan to-amber-500 transition-all duration-500';
+            } else {
+                badge.textContent = `RIESGO CONTROLADO (${riskScore}%)`;
+                badge.className = 'font-mono text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
+                bar.className = 'h-full bg-gradient-to-r from-nodara-primary to-emerald-400 transition-all duration-500';
+            }
+
+            planTitle.textContent = `Plan ${calcState.tier} NODARA (${calcState.servers})`;
+            planDesc.textContent = `Cobertura integral para ${calcState.env.toLowerCase()}: monitoreo continuo 24/7, auditoría y prueba de recuperación de respaldos, mantenimiento preventivo y reportes claros.`;
+        }
+
+        function saveLeadToStorage(sourceChannel) {
+            const companyInput = document.getElementById('calc-company-input')?.value.trim();
+            const issues = Array.from(document.querySelectorAll('.risk-checkbox:checked')).map(cb => cb.value);
+            const riskLabel = document.getElementById('risk-badge').textContent;
+
+            const leads = getStoredLeads();
+            leads.unshift({
+                id: 'LD-' + Math.floor(1000 + Math.random() * 9000),
+                company: companyInput || 'Visitante Web (Cotización Rápida)',
+                servers: calcState.servers,
+                env: calcState.env,
+                risk: riskLabel,
+                plan: `Plan ${calcState.tier} NODARA`,
+                issues: issues.length ? issues.join(' • ') : 'Optimización preventiva general',
+                channel: sourceChannel,
+                date: new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }),
+                status: 'Nuevo'
+            });
+            localStorage.setItem('nodara_admin_leads', JSON.stringify(leads));
+        }
+
+        function getDiagnosticSummaryText() {
+            const company = document.getElementById('calc-company-input')?.value.trim();
+            const issues = Array.from(document.querySelectorAll('.risk-checkbox:checked')).map(cb => cb.value);
+            const issuesStr = issues.length > 0 ? issues.join(', ') : 'Optimización preventiva general';
+            const riskLabel = document.getElementById('risk-badge').textContent;
+            return `Hola Víctor, realicé el diagnóstico en la web de *NODARA Server Solutions*:${company ? `\n• *Empresa:* ${company}` : ''}\n• *Infraestructura:* ${calcState.servers} (${calcState.env})\n• *Nivel detectado:* ${riskLabel}\n• *Situación actual:* ${issuesStr}\n• *Plan sugerido:* Plan ${calcState.tier} NODARA\n\nMe gustaría solicitar una cotización.`;
+        }
+
+        function sendDiagnosticWhatsApp() {
+            saveLeadToStorage('WhatsApp');
+            const text = getDiagnosticSummaryText();
+            const url = `https://wa.me/529993341058?text=${encodeURIComponent(text)}`;
+            openModal('Cotización Lista por WhatsApp', 'Hemos preparado los datos de tu diagnóstico para enviarlos directamente a Víctor Basto (999 334 1058).', url);
+        }
+
+        function sendDiagnosticEmail() {
+            saveLeadToStorage('Correo Electrónico');
+            const text = getDiagnosticSummaryText().replace(/\*/g, '');
+            const url = `mailto:victor99basto@gmail.com?subject=${encodeURIComponent('Cotización Servidores - NODARA Server Solutions')}&body=${encodeURIComponent(text)}`;
+            openModal('Cotización Lista por Correo', 'Se abrirá tu cliente de correo hacia victor99basto@gmail.com con el resumen de tu infraestructura.', url);
+        }
+
+        /* -----------------------------------------------------------
+           6. PORTAL PRIVADO DE ADMINISTRADORES (LOGIN + TABS + LEADS)
+        ----------------------------------------------------------- */
+        const ADMIN_USERS = {
+            'victor.basto': {
+                password: 'Nodara2026!',
+                name: 'Víctor Alejandro Basto Dzib',
+                role: 'Director Técnico / Contacto Principal'
+            },
+            'luis.santos': {
+                password: 'Nodara2026!',
+                name: 'Luis Fernando Santos Cauich',
+                role: 'Co-Fundador / Estrategia y Operaciones'
+            }
+        };
+
+        const DEFAULT_DEMO_LEADS = [
+            {
+                id: 'LD-1042',
+                company: 'Comercializadora Peninsular S.A. de C.V.',
+                servers: '3-5 Servidores',
+                env: 'Linux & Windows Server',
+                risk: 'RIESGO CRÍTICO (90%)',
+                plan: 'Plan Crecimiento NODARA',
+                issues: 'Sin monitoreo 24/7 continuo • Backups sin pruebas de recuperación',
+                channel: 'WhatsApp',
+                date: '24/11/2026, 11:20 a.m.',
+                status: 'En Seguimiento'
+            },
+            {
+                id: 'LD-1039',
+                company: 'Distribuidora Médica del Mayab',
+                servers: '1-2 Servidores',
+                env: 'Servidores Físicos',
+                risk: 'RIESGO MODERADO (50%)',
+                plan: 'Plan Esencial NODARA',
+                issues: 'Backups sin pruebas de recuperación',
+                channel: 'Correo Electrónico',
+                date: '22/11/2026, 04:45 p.m.',
+                status: 'Propuesta Enviada'
+            }
+        ];
+
+        function getStoredLeads() {
+            try {
+                const raw = localStorage.getItem('nodara_admin_leads');
+                if (!raw) {
+                    localStorage.setItem('nodara_admin_leads', JSON.stringify(DEFAULT_DEMO_LEADS));
+                    return [...DEFAULT_DEMO_LEADS];
+                }
+                return JSON.parse(raw);
+            } catch (e) {
+                return [...DEFAULT_DEMO_LEADS];
+            }
+        }
+
+        function resetDemoLeads() {
+            localStorage.setItem('nodara_admin_leads', JSON.stringify(DEFAULT_DEMO_LEADS));
+            renderAdminLeads();
+            showToast('Prospectos de ejemplo restaurados');
+        }
+
+        function renderAdminLeads() {
+            const leads = getStoredLeads();
+            const badge = document.getElementById('leads-count-badge');
+            const container = document.getElementById('admin-leads-list');
+            if (badge) badge.textContent = leads.length;
+            if (!container) return;
+
+            container.innerHTML = leads.map(lead => `
+                <div class="p-5 rounded-2xl bg-nodara-bg border border-white/10 hover:border-nodara-cyan/40 transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div class="space-y-1.5">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="font-mono text-xs text-nodara-cyan font-bold">${lead.id}</span>
+                            <h4 class="font-display font-bold text-white text-base">${lead.company}</h4>
+                            <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                                ${lead.status}
+                            </span>
+                        </div>
+                        <div class="text-xs text-slate-300">
+                            <strong class="text-white">${lead.servers}</strong> (${lead.env}) • Sugerencia: <span class="text-nodara-cyan font-semibold">${lead.plan}</span>
+                        </div>
+                        <div class="text-xs text-slate-400">
+                            Hallazgos: ${lead.issues}
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 lg:text-right font-mono text-xs">
+                        <div>
+                            <div class="text-amber-400 font-bold">${lead.risk}</div>
+                            <div class="text-slate-500 text-[11px] mt-0.5">Vía ${lead.channel} • ${lead.date}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAdminLoginModal() {
+            const modal = document.getElementById('admin-login-modal');
+            document.getElementById('login-error-box').classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeAdminLoginModal() {
+            const modal = document.getElementById('admin-login-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function toggleDemoCredentials() {
+            const panel = document.getElementById('demo-credentials-panel');
+            const arrow = document.getElementById('demo-cred-arrow');
+            const isHidden = panel.classList.toggle('hidden');
+            arrow.textContent = isHidden ? '▼' : '▲';
+        }
+
+        function autofillAdmin(user, pass) {
+            document.getElementById('admin-username').value = user;
+            document.getElementById('admin-password').value = pass;
+            document.getElementById('login-error-box').classList.add('hidden');
+        }
+
+        function activateAdminSession(userKey) {
+            const userData = ADMIN_USERS[userKey];
+            if (!userData) return;
+
+            sessionStorage.setItem('nodara_admin_session', userKey);
+            document.getElementById('admin-active-name').textContent = userData.name;
+            document.getElementById('admin-active-role').textContent = userData.role;
+
+            closeAdminLoginModal();
+            document.getElementById('public-website-view').classList.add('hidden');
+            document.getElementById('admin-dashboard-view').classList.remove('hidden');
+            renderAdminLeads();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('nodara_admin_session');
+            document.getElementById('admin-dashboard-view').classList.add('hidden');
+            document.getElementById('public-website-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast('Sesión administrativa cerrada');
+        }
+
+        document.getElementById('admin-login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userInput = document.getElementById('admin-username').value.trim().toLowerCase();
+            const passInput = document.getElementById('admin-password').value;
+
+            const account = ADMIN_USERS[userInput];
+            if (account && account.password === passInput) {
+                activateAdminSession(userInput);
+                showToast(`Bienvenido, ${account.name}`);
+            } else {
+                document.getElementById('login-error-box').classList.remove('hidden');
+            }
+        });
+
+        function switchAdminTab(tabId) {
+            document.querySelectorAll('.admin-tab-panel').forEach(panel => panel.classList.add('hidden'));
+            document.getElementById(`admin-tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.className = 'admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2';
+            });
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            activeBtn.className = 'admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-nodara-primary text-white shadow transition-all flex items-center gap-2';
+
+            if (tabId === 'leads') renderAdminLeads();
+        }
+
+        // Verificar si ya existe una sesión activa al cargar la página
+        (function checkExistingAdminSession() {
+            const savedUser = sessionStorage.getItem('nodara_admin_session');
+            if (savedUser && ADMIN_USERS[savedUser]) {
+                activateAdminSession(savedUser);
+            }
+        })();
+
+        /* -----------------------------------------------------------
+           7. FORMULARIO DE CONTACTO PÚBLICO, MODAL Y PORTAPAPELES
+        ----------------------------------------------------------- */
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function copyToClipboard(text, message) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(message);
+        }
+
+        function openModal(title, body, url) {
+            const modal = document.getElementById('confirmation-modal');
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').textContent = body;
+            document.getElementById('modal-action-link').href = url;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('confirmation-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('f-name').value.trim();
+            const company = document.getElementById('f-company').value.trim();
+            const msg = document.getElementById('f-message').value.trim() || 'Solicito información sobre Gestión Integral de Servidores.';
+
+            const fullText = `Hola Víctor, soy *${name}* de *${company}*.\n\n*Consulta desde web NODARA:*\n${msg}\n\nQuedo atento a su respuesta.`;
+            const waUrl = `https://wa.me/529993341058?text=${encodeURIComponent(fullText)}`;
+            
+            openModal(
+                '¡Mensaje Listo para WhatsApp!',
+                `Hola ${name}, hemos preparado tu consulta personalizada para enviarla directamente a Víctor Basto (999 334 1058).`,
+                waUrl
+            );
+        });
+
+        function submitContactEmail() {
+            const name = document.getElementById('f-name').value.trim() || 'Cliente Interesado';
+            const company = document.getElementById('f-company').value.trim() || 'Mi Empresa';
+            const msg = document.getElementById('f-message').value.trim() || 'Me gustaría solicitar información de sus servicios.';
+
+            const subject = `Consulta NODARA Server Solutions - ${company}`;
+            const body = `Hola Víctor Basto,\n\nSoy ${name} de la empresa ${company}.\n\nDetalle de consulta:\n${msg}\n\nSaludos cordiales.`;
+            const mailUrl = `mailto:victor99basto@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+            openModal(
+                '¡Correo Listo para Enviar!',
+                `Haz clic en "Continuar ahora" para abrir tu aplicación de correo hacia victor99basto@gmail.com.`,
+                mailUrl
+            );
+        }
+    </script>
+</body>
+</html>
